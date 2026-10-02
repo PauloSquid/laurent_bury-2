@@ -22,11 +22,14 @@ Firebase suffit : lecture publique du catalogue, écriture réservée au compte 
 4. Déployer les règles : `npx firebase-tools deploy --only firestore:rules`
 5. Se connecter à `/admin` avec l’e-mail Firebase, puis cliquer sur « Importer les ouvrages ».
 
-Le déploiement du site :
+Le déploiement du site se fait tout seul à chaque push sur `main`, via `.github/workflows/deploy.yml`. Il publie l’hébergement et les règles Firestore sur le projet `laurentburytraducteur`.
 
-```bash
-npm run build
-npx firebase-tools deploy --only hosting
-```
+Une seule chose se configure à la main, avec le compte propriétaire du projet Firebase :
+
+1. [Comptes de service Google Cloud](https://console.cloud.google.com/iam-admin/serviceaccounts?project=laurentburytraducteur) → **Créer un compte de service**, par exemple `github-deploy`.
+2. Lui donner les rôles **Administrateur Firebase Hosting**, **Administrateur Firebase Rules** et **Consommateur Service Usage**.
+3. Onglet **Clés** → **Ajouter une clé** → **JSON**. Ce fichier ne se commit pas.
+4. Sur GitHub, dépôt **PauloSquid/laurent_bury-2** → **Settings** → **Secrets and variables** → **Actions** → **New repository secret**. Nom : `FIREBASE_SERVICE_ACCOUNT`. Valeur : le contenu entier du fichier JSON.
+5. Pousser sur `main`. L’onglet **Actions** construit le site puis le publie sur `https://laurentburytraducteur.web.app` et `https://laurentburytraducteur.firebaseapp.com`.
 
 Les redirections sont déjà prévues dans `firebase.json` pour le routeur Angular.
